@@ -1,0 +1,17 @@
+# 统一以 LF 入库；Windows 上签出时也不做 CRLF 转换，避免生成产物出现整文件 diff。
+* text=auto eol=lf
+
+# 二进制资源不做行尾转换
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.gif binary
+*.ico binary
+*.zip binary
+
+# 生成的产物标记为语言统计里排除
+lib/client.js linguist-generated=true
+demo.html linguist-generated=true
+demo/spec.html linguist-generated=true
+demo/compare.html linguist-generated=true

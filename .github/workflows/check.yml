@@ -1,0 +1,40 @@
+# 每次 push / PR 都跑一遍离线校验：产物能解析、加载器契约成立、挂载层不炸。
+# 这些检查都不需要 DSH 本体（seat-smoke 用 stub React），所以能在 CI 里跑。
+name: check
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: 构建（含“产物必须能解析”闸门）
+        run: node build.mjs
+
+      - name: 加载器契约
+        run: node tools/check-bundle.mjs lib/client.js
+
+      - name: 产物与演示页语法
+        run: node tools/check-inline.mjs lib/client.js lib/index.js demo.html demo/spec.html demo/compare.html
+
+      - name: 挂载层冒烟（stub React）
+        run: node tools/seat-smoke.mjs
+
+      - name: 已提交的产物与源码一致
+        run: |
+          # 演示页是 gitignore 的生成物，只需确认入库的 lib/ 与本次构建一致。
+          if [ -n "$(git status --porcelain lib)" ]; then
+            echo "::error::lib/ 与 src/ 不同步，请在本地跑 node build.mjs 并提交产物"
+            git --no-pager diff --stat lib
+            exit 1
+          fi

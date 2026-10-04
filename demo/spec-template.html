@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>推理等级滑条 · 组件规格卡</title>
+<style>
+  :root {
+    --ink: #faf9f5; --canvas: #141312; --hairline: #ffffff1f; --muted: #a09d96; --faint: #6f6c66; --coral: #d97757;
+    --display: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    --sans: "Inter Tight", "Segoe UI Variable Text", "Segoe UI", system-ui, "PingFang SC", "Microsoft YaHei", sans-serif;
+  }
+  body { margin: 0; background: var(--canvas); color: var(--ink); font: 400 13px/1.6 var(--sans); padding: 26px 30px 34px; }
+  h1 { font: 400 26px/1.2 var(--display); margin: 0 0 4px; }
+  h1 em { color: var(--muted); font-style: italic; }
+  .sub { font: 400 11px/1 var(--mono); letter-spacing: .16em; text-transform: uppercase; color: var(--coral); margin-bottom: 8px; }
+  #cases { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 20px; }
+  .case { border: 1px solid var(--hairline); border-radius: 13px; padding: 12px 14px; background: #ffffff05; }
+  .case h3 { font: 500 11.5px/1.4 var(--mono); color: var(--muted); margin: 0 0 12px; font-weight: 500; }
+  .seat {
+    --dsw-alias-brand-primary: #e08a6a; --dsw-alias-label-primary: #faf9f5; --dsw-alias-label-primary-foreground: #181715;
+    --dsw-alias-label-tertiary: #a09d96; --dsw-alias-interactive-bg-hover: #faf9f514; --dsw-specific-input-major: #252320;
+    --dsw-alias-border-l1: #faf9f51f; --dsw-alias-bg-elevated: #252320; --dsw-alias-tooltip-bg: #2b2925;
+    --dsw-static-neutral-bluish-00: #fff;
+    background: #1c1b18; border-radius: 20px; padding: 9px 12px; display: flex; align-items: center; min-height: 30px;
+  }
+  .case:nth-child(-n+3) .seat { padding: 14px 16px; --rs-rail: #ffffff1f; --rs-dot: #ffffff3d; }
+  .case:nth-child(even) .seat {
+    --dsw-alias-brand-primary: #d97757; --dsw-alias-label-primary: #141413; --dsw-alias-label-label: #141413;
+    --dsw-alias-label-tertiary: #6f6c66; --dsw-alias-interactive-bg-hover: #1414130f; --dsw-specific-input-major: #fff;
+    --dsw-alias-bg-elevated: #fff; --dsw-alias-tooltip-bg: #141413; background: #faf9f5; color: #141413;
+  }
+  .case:nth-child(even) h3 { color: #8b8781; }
+</style>
+</head>
+<body>
+  <div class="sub">Spec card · <span style="text-transform:none">v0.1.0</span></div>
+  <h1>推理等级滑条 <em>states</em></h1>
+  <div id="cases"></div>
+
+  <script type="module">
+/* ==== component source ==== */
+<!--INJECT:COMPONENT-->
+/* ==== spec driver ==== */
+<!--INJECT:DRIVER-->
+  </script>
+</body>
+</html>

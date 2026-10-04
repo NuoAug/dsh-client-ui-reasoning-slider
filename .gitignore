@@ -1,0 +1,20 @@
+# 依赖与安装产物
+node_modules/
+.pnpm-store/
+
+# 生成的演示页（由 build.mjs 从 demo/*-template.html 生成）
+/demo.html
+/demo/spec.html
+/demo/compare.html
+
+# 临时帧与中间图（tools/sweep-*.py 的工作文件）
+demo/_*.png
+*.tmp.png
+
+# 编辑器 / 系统
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini
+*.log
+pnpm-debug.log*

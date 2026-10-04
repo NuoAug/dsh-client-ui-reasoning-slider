@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>对照 · 四档（浅色 / 深色 / 模型选择）</title>
+<style>
+  html, body { margin: 0; background: #f6f7f9; font-family: ui-sans-serif, system-ui, "Segoe UI", sans-serif; }
+  /* Each card is laid out at the reference crop width so the render can be
+     compared against the screenshots one for one. */
+  #cards, #dark-cards { width: 321px; padding: 14px; display: flex; flex-direction: column; gap: 12px; }
+  #cards > dsh-reasoning-slider, #dark-cards > dsh-reasoning-slider { display: block; }
+  #dark-cards { background: #141312; }
+</style>
+</head>
+<body>
+  <div id="cards"></div>
+  <div id="dark-cards"></div>
+  <script type="module">
+/* ==== component source ==== */
+<!--INJECT:COMPONENT-->
+/* ==== compare driver ==== */
+<!--INJECT:DRIVER-->
+  </script>
+</body>
+</html>

@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>推理等级滑条 · Reasoning Slider — 组件演示</title>
+<style>
+  :root {
+    color-scheme: dark;
+    --ink: #faf9f5;
+    --canvas: #141312;
+    --card: #1c1b18;
+    --hairline: #ffffff1f;
+    --muted: #a09d96;
+    --faint: #6f6c66;
+    --coral: #d97757;
+    --periwinkle: #7c91ff;
+    --display: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+    --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+    --sans: "Inter Tight", "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--canvas);
+    color: var(--ink);
+    font: 400 14px/1.6 var(--sans);
+    -webkit-font-smoothing: antialiased;
+    padding: 40px clamp(18px, 5vw, 72px) 72px;
+    background-image:
+      radial-gradient(1100px 520px at 12% -12%, #d977571f, transparent 62%),
+      radial-gradient(900px 460px at 92% 4%, #7c91ff14, transparent 60%),
+      linear-gradient(#ffffff08 1px, transparent 1px),
+      linear-gradient(90deg, #ffffff08 1px, transparent 1px);
+    background-size: auto, auto, 28px 28px, 28px 28px;
+  }
+  .wrap { max-width: 1120px; margin: 0 auto; }
+
+  /* ---------- masthead ---------- */
+  header { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 22px; animation: rise .5s ease both; }
+  .eyebrow { font: 500 11px/1 var(--mono); letter-spacing: .18em; text-transform: uppercase; color: var(--coral); }
+  h1 { font: 400 clamp(30px, 4.4vw, 46px)/1.05 var(--display); margin: 10px 0 0; letter-spacing: -.01em; }
+  h1 em { font-style: italic; color: var(--muted); }
+  .lede { margin: 12px 0 0; max-width: 62ch; color: var(--muted); }
+  .spec { margin-left: auto; display: grid; grid-template-columns: auto auto; gap: 4px 18px; font: 400 12px/1.5 var(--mono); color: var(--muted); }
+  .spec dt { color: var(--faint); }
+  .spec dd { margin: 0; color: var(--ink); font-variant-numeric: tabular-nums; }
+
+  /* ---------- panes ---------- */
+  .panes { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 18px; margin: 34px 0 0; }
+  .pane {
+    border: 1px solid var(--hairline);
+    border-radius: 18px;
+    padding: 18px;
+    animation: rise .55s ease both;
+    position: relative;
+    overflow: hidden;
+  }
+  .pane { animation-delay: .06s; }
+  .pane:nth-child(2) { animation-delay: .14s; }
+  .pane-title { display: flex; align-items: center; gap: 10px; font: 500 11px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--faint); margin-bottom: 14px; }
+  .pane-title::after { content: ""; flex: 1; height: 1px; background: var(--hairline); }
+
+  /* the simulated composer row */
+  .composer {
+    display: flex; align-items: center; gap: 10px;
+    border: 1px solid var(--dsw-alias-border-l1);
+    background: var(--dsw-specific-input-major);
+    border-radius: 26px;
+    padding: 8px 12px 8px 16px;
+    box-shadow: 0 1px 3px #1414130a;
+  }
+  .composer .grow { flex: 1; color: var(--dsw-alias-label-tertiary); font-size: 13px; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 12px; color: var(--dsw-alias-label-primary);
+    background: var(--dsw-alias-interactive-bg-hover);
+    border-radius: 999px; padding: 5px 10px; white-space: nowrap;
+  }
+  .chip svg { width: 12px; height: 12px; opacity: .7; }
+  .send {
+    width: 30px; height: 30px; border-radius: 999px; flex: none;
+    background: var(--dsw-alias-brand-primary);
+    color: var(--dsw-alias-label-primary-foreground);
+    display: grid; place-items: center; font-size: 15px;
+  }
+  .pane-light { --dsw-alias-brand-primary: #d97757; --dsw-alias-label-primary: #141413; --dsw-alias-label-primary-foreground: #faf9f5; --dsw-alias-label-tertiary: #6f6c66; --dsw-alias-interactive-bg-hover: #1414130f; --dsw-specific-input-major: #ffffff; --dsw-alias-border-l1: #1414131f; --dsw-alias-bg-elevated: #ffffff; --dsw-alias-tooltip-bg: #141413; --dsw-static-neutral-bluish-00: #ffffff; background: #faf9f5; color: #141413; }
+  .pane-dark  { --dsw-alias-brand-primary: #e08a6a; --dsw-alias-label-primary: #faf9f5; --dsw-alias-label-primary-foreground: #181715; --dsw-alias-label-tertiary: #a09d96; --dsw-alias-interactive-bg-hover: #faf9f514; --dsw-specific-input-major: #252320; --dsw-alias-border-l1: #faf9f51f; --dsw-alias-bg-elevated: #252320; --dsw-alias-tooltip-bg: #2b2925; --dsw-static-neutral-bluish-00: #ffffff; background: #181715; color: #faf9f5; }
+  .pane-light .pane-title, .pane-light .hint { color: #6f6c66; }
+  .pane-dark .pane-title, .pane-dark .hint { color: #a09d96; }
+  .hint { font: 400 11.5px/1.6 var(--mono); margin: 14px 0 0; }
+  .reference { margin-top: 18px; animation-delay: .22s; }
+  .reference .pane-title { margin-bottom: 16px; }
+
+  /* ---------- bench ---------- */
+  .bench { display: grid; grid-template-columns: minmax(300px, 1fr) minmax(0, 1.1fr); gap: 18px; margin: 26px 0 0; }
+  .panel { border: 1px solid var(--hairline); border-radius: 16px; padding: 16px; background: #ffffff05; animation: rise .6s ease both; animation-delay: .2s; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .row + .row { margin-top: 12px; }
+  .label { font: 500 11px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--faint); margin-right: 4px; }
+  button {
+    font: 500 12px/1 var(--sans); color: var(--ink);
+    background: #ffffff0a; border: 1px solid var(--hairline);
+    border-radius: 999px; padding: 7px 13px; cursor: pointer;
+    transition: background .16s ease, border-color .16s ease, transform .12s ease;
+  }
+  button:hover { background: #ffffff14; border-color: #ffffff33; }
+  button:active { transform: translateY(1px); }
+  button.on { background: #d9775726; border-color: #d9775766; color: #f4c3ae; }
+  #status { font: 500 12px/1 var(--mono); padding: 5px 9px; border-radius: 7px; background: #ffffff0d; }
+  #status[data-kind="busy"] { color: #f4c3ae; }
+  #status[data-kind="error"] { color: #ff9b8a; background: #ff6b4a1f; }
+
+  #log { margin: 14px 0 0; max-height: 232px; overflow: auto; font: 400 12px/1.7 var(--mono); }
+  .log-line { display: flex; gap: 10px; border-bottom: 1px dashed var(--hairline); padding: 5px 0; }
+  .log-time { color: var(--faint); flex: none; }
+
+  footer { margin: 32px 0 0; padding-top: 16px; border-top: 1px solid var(--hairline); color: var(--faint); font: 400 12px/1.7 var(--mono); }
+  kbd { font: 500 11px/1 var(--mono); border: 1px solid var(--hairline); border-bottom-width: 2px; border-radius: 5px; padding: 3px 6px; color: var(--ink); background: #ffffff0a; }
+
+  @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { header, .pane, .panel { animation: none; } }
+  @media (max-width: 860px) { .bench { grid-template-columns: 1fr; } .spec { margin-left: 0; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <div class="eyebrow">DSH client component · v0.1.0</div>
+      <h1>推理等级滑条 <em>Reasoning&nbsp;Slider</em></h1>
+      <p class="lede">把「打开菜单 → 进子面板 → 选一行」换成一条 Codex 式的分段滑轨：拖动、点按、方向键都能换档，松手即落盘。纯自定义元素 + Shadow DOM，读 DSH 设计变量，自动跟随皮肤与亮暗模式。</p>
+    </div>
+    <dl class="spec">
+      <dt>当前选择</dt><dd id="readout">—</dd>
+      <dt>模型 id</dt><dd id="spec-model">—</dd>
+      <dt>档位数</dt><dd id="spec-stops">—</dd>
+      <dt>默认档</dt><dd id="spec-default">—</dd>
+      <dt>渲染</dt><dd id="spec-render">—</dd>
+    </dl>
+  </header>
+
+  <section class="panes">
+    <article class="pane pane-light">
+      <div class="pane-title">浅色主题 · Light</div>
+      <div class="composer">
+        <span class="grow">问点什么…</span>
+        <dsh-reasoning-slider id="slider-light" compact label="推理等级" style="--rs-track-width:118px"></dsh-reasoning-slider>
+        <span class="chip">DeepSeek-V41-Flash High <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2.5 4.5 6 8l3.5-3.5"/></svg></span>
+        <span class="send">↑</span>
+      </div>
+      <p class="hint">左侧三格电量表随档位点亮；悬停显示档位说明，拖动时拇指放大并带光环。</p>
+    </article>
+    <article class="pane pane-dark">
+      <div class="pane-title">深色主题 · Dark</div>
+      <div class="composer">
+        <span class="grow">问点什么…</span>
+        <dsh-reasoning-slider id="slider-dark" compact label="推理等级" style="--rs-track-width:118px"></dsh-reasoning-slider>
+        <span class="chip">DeepSeek-V41-Flash High <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2.5 4.5 6 8l3.5-3.5"/></svg></span>
+        <span class="send">↑</span>
+      </div>
+      <p class="hint">同一个组件、同一份状态：只靠继承下来的 <code>--dsw-*</code> 变量换皮。</p>
+    </article>
+  </section>
+
+  <section class="pane reference">
+    <div class="pane-title">一比一形态 · 卡片（card + headline + subtitle + 图标行）</div>
+    <dsh-reasoning-slider id="slider-ref" card subtitle="GPT-5.6 Sol" chevron label="推理等级"></dsh-reasoning-slider>
+    <p class="hint">普通档位纯蓝填充；只有最高档（Ultra）换成蓝→紫渐变 + 白色火花，标题同时转紫。轨道圆点未填充为灰、被填充扫过后变浅色；⚡ 是形态标识，↻ 可点击（会发 reasoning-reset 并回到默认档）。</p>
+  </section>
+
+  <section class="bench">
+    <div class="panel">
+      <div class="row">
+        <span class="label">模型</span>
+        <button data-model="flash" class="on">Flash（4 档 + 默认档）</button>
+        <button data-model="codex">GPT-5.6 Sol（6 档 · Ultra 火花）</button>
+        <button data-model="v4-pro">V4-Pro（含“默认”）</button>
+        <button data-model="plain">无推理模型</button>
+      </div>
+      <div class="row">
+        <span class="label">状态</span>
+        <button data-toggle="expanded">展开样式</button>
+        <button data-toggle="disabled">禁用</button>
+        <button data-toggle="busy">写入中</button>
+        <button id="fail">模拟被宿主拒绝</button>
+      </div>
+      <div class="row">
+        <span class="label">结果</span>
+        <span id="status">idle</span>
+        <button id="clear">清空日志</button>
+      </div>
+      <p class="hint">真实插件里，<code>busy</code> 来自 <code>directory.store.pending</code>，红点来自 <code>store.error</code>，滑条的 <code>reasoning-change</code> 直接调用 <code>directory.select({provider, model, reasoningEffort})</code>。</p>
+    </div>
+    <div class="panel">
+      <div class="row"><span class="label">事件</span><span class="hint" style="margin:0">reasoning-change 明细</span></div>
+      <div id="log"></div>
+    </div>
+  </section>
+
+  <footer>
+    键盘：<kbd>Tab</kbd> 聚焦 · <kbd>←</kbd><kbd>→</kbd> 换档 · <kbd>Home</kbd>/<kbd>End</kbd> 首尾 · <kbd>1</kbd>–<kbd>9</kbd> 直接跳档<br>
+    无障碍：<code>role="slider"</code> + <code>aria-valuenow/valuetext</code>；<code>prefers-reduced-motion</code> 下自动去掉位移与脉冲动画。
+  </footer>
+</div>
+
+<script type="module">
+/* ==== component source (src/reasoning-slider.js) ==== */
+<!--INJECT:COMPONENT-->
+/* ==== demo harness (src/demo-harness.js) ==== */
+<!--INJECT:HARNESS-->
+</script>
+</body>
+</html>

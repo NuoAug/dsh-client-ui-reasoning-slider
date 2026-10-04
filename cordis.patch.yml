@@ -1,0 +1,7 @@
+# Mounts the reasoning slider as its own profile row. The bundle layer is what
+# the loader sees: the host half (`lib/index.js`) activates here, and the client
+# half (`lib/client.js`) is discovered through this package's
+# `exports["./client"]` because `dsh.client.platform` is `web`.
+- insert:
+    - id: reasoning-slider
+      name: "dsh-client-ui-reasoning-slider"
