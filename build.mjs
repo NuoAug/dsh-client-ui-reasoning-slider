@@ -144,7 +144,7 @@ for (const [title, levels, value, flags] of cases) {
   slider.setAttribute("label", "推理等级");
   if (!flags.includes("expanded") && !flags.includes("headline")) slider.setAttribute("compact", "");
   if (flags.includes("stretch")) slider.style.setProperty("--rs-track-height", "22px");
-  if (flags.includes("headline")) slider.setAttribute("subtitle", "GPT-5.6 Sol");
+  if (flags.includes("headline")) slider.setAttribute("subtitle", "DeepSeek-V41-Flash");
   for (const flag of flags) slider.setAttribute(flag, "");
   slider.levels = levels;
   slider.value = value;

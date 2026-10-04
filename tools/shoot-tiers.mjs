@@ -8,8 +8,9 @@
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
-const [url, outDir, portRaw] = process.argv.slice(2);
+const [url, outDir, portRaw, prefixRaw] = process.argv.slice(2);
 const port = Number(portRaw ?? 9333);
+const prefix = prefixRaw ?? "app-tier";
 mkdirSync(outDir, { recursive: true });
 
 async function connect() {
@@ -95,15 +96,15 @@ for (let index = 0; index < count; index += 1) {
   const label = seat.levels[index];
   await evaluate(client, `document.querySelector("dsh-reasoning-slider").select(${index})`);
   await new Promise((resolve) => setTimeout(resolve, 1400));
-  await shoot(`app-tier-${index}-${label}.png`);
+  await shoot(`${prefix}-${index}-${label}.png`);
 }
 
 // Composer with the model menu open (click the model line inside the shadow root).
 await evaluate(client, `document.querySelector("dsh-reasoning-slider").shadowRoot.querySelector(".headline .sub")?.click()`);
 await new Promise((resolve) => setTimeout(resolve, 900));
 const full = await client.send("Page.captureScreenshot", { format: "png", captureBeyondViewport: false });
-writeFileSync(join(outDir, "app-model-menu.png"), Buffer.from(full.data, "base64"));
-console.log("  app-model-menu.png (full page)");
+writeFileSync(join(outDir, `${prefix === "app-tier" ? "app-model-menu" : `${prefix}-menu`}.png`), Buffer.from(full.data, "base64"));
+console.log(`  ${prefix === "app-tier" ? "app-model-menu" : `${prefix}-menu`}.png (full page)`);
 
 console.log(`\nconsole exceptions: ${client.problems.length}`);
 for (const problem of client.problems.slice(0, 5)) console.log("  " + String(problem).split("\n")[0]);

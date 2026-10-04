@@ -12,6 +12,18 @@
 
 ![四档近景](demo/app-tiers.png)
 
+同一实例的**浅色主题**（把 profile 的 `ui-theme` 设为 `light` 后重启拍摄）：
+
+![浅色主题整页](demo/app-light-menu.png)
+
+![浅色四档近景](demo/app-light-tiers.png)
+
+在滑条自带的模型菜单里切换模型：高亮移到另一行 → 选中后模型名与档位随之更新。
+
+| 菜单里选中另一模型 | 切换完成后 |
+| --- | --- |
+| ![切换过程](demo/app-switch-open.png) | ![切换完成](demo/app-switch-after.png) |
+
 组件级状态对照（离线渲染，含浅色与深色主题）：
 
 ![四档状态对照：轻度 / 中 / 高 / 极高，浅色与深色主题，以及自带的模型菜单](demo/compare.png)
