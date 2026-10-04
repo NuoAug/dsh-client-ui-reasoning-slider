@@ -57,6 +57,27 @@ await client.send("Page.enable");
 await client.send("Page.navigate", { url });
 await new Promise((resolve) => setTimeout(resolve, 18000));
 
+// A first-run "预览版说明" modal covers the composer; dismiss it before measuring,
+// otherwise every crop below frames the modal instead of the slider.
+const dismissed = await evaluate(client, `(() => {
+  const hit = [...document.querySelectorAll("button")].find((b) => (b.textContent || "").trim().startsWith("继续"));
+  if (hit === undefined) return "no-modal";
+  hit.click();
+  return "dismissed";
+})()`);
+console.log(`welcome modal: ${dismissed}`);
+await new Promise((resolve) => setTimeout(resolve, 1500));
+
+// Wait until the seat actually carries levels (the directory arrives async).
+for (let attempt = 0; attempt < 40; attempt += 1) {
+  const ready = await evaluate(client, `(() => {
+    const el = document.querySelector("dsh-reasoning-slider");
+    return el !== null && (el.levels || []).length >= 2;
+  })()`);
+  if (ready === true) break;
+  await new Promise((resolve) => setTimeout(resolve, 500));
+}
+
 const seat = await evaluate(client, `(() => {
   const el = document.querySelector("dsh-reasoning-slider");
   if (el === null) return null;

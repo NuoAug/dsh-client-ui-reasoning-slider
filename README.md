@@ -24,10 +24,6 @@
 | --- | --- |
 | ![切换过程](demo/app-switch-open.png) | ![切换完成](demo/app-switch-after.png) |
 
-组件级状态对照（离线渲染，含浅色与深色主题）：
-
-![四档状态对照：轻度 / 中 / 高 / 极高，浅色与深色主题，以及自带的模型菜单](demo/compare.png)
-
 ---
 
 ## English summary
@@ -58,10 +54,6 @@ dsh plugin --profile desktop add link:"<path to this repo>"   # then restart the
 - **跟随主题**：只读 `--dsw-*` 设计变量，自动跟随皮肤与亮暗模式（`:host-context([data-ds-dark-theme])`），也可用 `dark` 属性强制。
 - **四档语义**：`Off / Low / High / Max` → **轻度 / 中 / 高 / 极高**；普通档纯蓝填充，次高档渐入紫 + 细密火星，最高档满配渐变 + 火星扫掠、标题转紫。
 - **可诊断**：座位元素常驻 `data-session / data-available / data-groups / data-levels / data-problem`，空白控件不再是无头案。
-
-| 极高（最高档） | 扫掠方向（四帧胶片） |
-| --- | --- |
-| ![极高](demo/spec.png) | ![火星扫掠](demo/sweep-strip.png) |
 
 ---
 
