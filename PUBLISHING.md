@@ -53,3 +53,9 @@ npm publish --access public
 - **`lib/client.js` 提交进仓库**：DSH 客户端插件靠它加载，消费者装完即用，无需构建。
 - **不要提交 `.git`、`node_modules`**：前者随环境而变，后者体积大且可由依赖声明还原。
 - CI（`.github/workflows/check.yml`）在 push / PR 时跑：构建闸门 → 加载器契约 → 产物与演示页语法 → 挂载层冒烟 → `lib/` 与 `src/` 一致性。都不需要 DSH 本体。
+
+## 六、改过截图后要换文件名
+
+GitHub 渲染 README 里的相对路径图片时，URL 只跟**文件名**有关；文件内容变了但名字没变，
+浏览器与 GitHub 的边缘缓存会继续显示旧图（硬刷新也常常绕不过）。所以**替换截图时请同时改名**（例如 pp-light-tiers-v2.png）
+并更新 README 里的引用——本项目已经因为这个问题踩过一次。

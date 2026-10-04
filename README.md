@@ -14,9 +14,9 @@
 
 同一实例的**浅色主题**（把 profile 的 `ui-theme` 设为 `light` 后重启拍摄）：
 
-![浅色主题整页](demo/app-light-menu.png)
+![浅色主题整页](demo/app-light-menu-v2.png)
 
-![浅色四档近景](demo/app-light-tiers.png)
+![浅色四档近景](demo/app-light-tiers-v2.png)
 
 在滑条自带的模型菜单里切换模型：高亮移到另一行 → 选中后模型名与档位随之更新。
 
