@@ -1,42 +1,42 @@
 # 上传到 GitHub
 
-本文件夹是**完整可用的项目**（含已构建的 `lib/`）。
+仓库地址：<https://github.com/NuoAug/dsh-client-ui-reasoning-slider>
 
-## 一、占位符已替换
+本文件夹已经是**完整可用的项目**（含已构建的 `lib/`），元数据（`package.json`、`LICENSE`、README 里的安装示例）都已填成 `NuoAug`。
 
-以下位置的 `GITHUB_USER` 已替换为 GitHub 用户名 `NuoAug`：
+## 一、推送本次改动
 
-| 文件 | 位置 |
-| --- | --- |
-| `package.json` | `author`、`homepage`、`repository.url`、`bugs.url` |
-| `LICENSE` | 版权人一行 |
-| `README.md` | 安装章节的 `github:NuoAug/...` |
-
-## 二、建空仓库并推送
-
-在 GitHub 上**新建一个空仓库**（不要勾选 README / .gitignore / License，否则会冲突），然后：
+远端已有的首个提交作者是正确的（`NuoAug <DJH080140@outlook.com>`），**不需要改写历史**，直接推即可：
 
 ```powershell
-git remote add origin https://github.com/NuoAug/dsh-client-ui-reasoning-slider.git
-git push -u origin main
+git push
 ```
 
-若这个文件夹还不是 git 仓库（从压缩包解出来的情况），先用第三节的脚本。
+本地当前比远端多一个提交（新增真实实例效果图与截图脚本）。
 
-## 三、初始化 git（仅压缩包解出的新文件夹需要）
+## 二、日常推送
 
 ```powershell
-pwsh -File .\setup-git.ps1 -Name "NuoAug" -Email "DJH080140@outlook.com"
+git add -A
+git commit -m "fix: …"
+git push
 ```
 
-它会 `git init -b main`、写入**仓库级**身份（不动你机器上的全局配置）、`git add -A` 并提交。
-
-如果提交作者需要修改：
+改了 `src/` 之后先构建，产物会一起提交（CI 会检查两者是否同步）：
 
 ```powershell
-git config user.name "NuoAug"
-git config user.email "DJH080140@outlook.com"
-git commit --amend --reset-author --no-edit
+node build.mjs
+```
+
+## 三、把项目交给别人 / 换机器
+
+压缩包里已经包含构建好的产物与三个演示页，**接收方不装 Node 也能双击 `demo.html` 看交互演示**。
+
+如果对方要自己建仓：
+
+```powershell
+pwsh -File .\setup-git.ps1 -Name "你的显示名" -Email "you@users.noreply.github.com" `
+     -Remote "https://github.com/<you>/dsh-client-ui-reasoning-slider.git"
 ```
 
 ## 四、可选：发布到 npm
@@ -49,14 +49,7 @@ npm publish --access public
 
 ## 五、几点说明
 
-- **`demo/*.html` 是构建产物**（由 `demo/*-template.html` 生成），在 git 里被 `.gitignore` 排除；
-  压缩包中带着它们，是为了让你**不装 Node 也能双击 `demo.html` 看交互演示**。首次推送后仓库里没有这三个文件，这是预期行为。
-- **`lib/client.js` 是提交进仓库的**：DSH 客户端插件靠它加载，消费者装完即用，不需要构建。
-- 改了 `src/` 之后：
-
-  ```powershell
-  node build.mjs    # 生成 lib/client.js 与三个演示页；产物语法不过会直接构建失败
-  ```
-
-- **不要提交 `.git`、`node_modules`**：前者随各人环境而变，后者体积大且可由依赖声明还原。
-- CI（`.github/workflows/check.yml`）在 push / PR 时跑构建闸门、加载器契约、挂载层冒烟与产物一致性，不需要 DSH 本体即可执行。
+- **`demo/*.html` 是构建产物**（由 `demo/*-template.html` 生成），在 git 里被 `.gitignore` 排除；压缩包中带着它们，是为了不装 Node 也能直接看演示。首次推送后仓库里没有这三个文件，属预期。
+- **`lib/client.js` 提交进仓库**：DSH 客户端插件靠它加载，消费者装完即用，无需构建。
+- **不要提交 `.git`、`node_modules`**：前者随环境而变，后者体积大且可由依赖声明还原。
+- CI（`.github/workflows/check.yml`）在 push / PR 时跑：构建闸门 → 加载器契约 → 产物与演示页语法 → 挂载层冒烟 → `lib/` 与 `src/` 一致性。都不需要 DSH 本体。
